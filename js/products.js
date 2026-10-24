@@ -1181,9 +1181,7 @@ const verifiedCatalogProducts = mockProducts.filter(product =>
 );
 
 const multiSportCatalog = [
-    // ==========================================
-    // 1. MÔN BÓNG RỔ (Dụng cụ, Giày, Quần Áo)
-    // ==========================================
+
     {
         productCode: "SP816",
         name: "Quả Bóng Rổ Composite PU Molten BG4500 (Size 6, 7) — Thi Đấu Quốc Tế",
@@ -1248,9 +1246,6 @@ const multiSportCatalog = [
         isHidden: false
     },
 
-    // ==========================================
-    // 2. MÔN BÓNG CHUYỀN (Giày, Bóng, Áo đấu)
-    // ==========================================
     {
         productCode: "SP805",
         name: "Giày Bóng Chuyền Mizuno Cyclone Speed 5 - Trắng/Đen Chính Hãng",
@@ -1294,9 +1289,6 @@ const multiSportCatalog = [
         isHidden: false
     },
 
-    // ==========================================
-    // 3. MÔN BÓNG ĐÁ / FUTSAL (Giày, Quả bóng, Quần Áo)
-    // ==========================================
     {
         productCode: "SP803",
         name: "Giày Bóng Đá Sân Cỏ Nhân Tạo & Futsal Kamito Velocidad Play TF - Xanh/Trắng",
@@ -1340,9 +1332,6 @@ const multiSportCatalog = [
         isHidden: false
     },
 
-    // ==========================================
-    // 4. MÔN BÓNG BÀN (Vợt, Mặt vợt, Giày, Áo)
-    // ==========================================
     {
         productCode: "SP808",
         name: "Giày Bóng Bàn Thi Đấu Mizuno Wave Drive 9 - Trắng/Đỏ Chính Hãng",
@@ -1449,9 +1438,6 @@ const multiSportCatalog = [
         isHidden: false
     },
 
-    // ==========================================
-    // 5. MÔN TENNIS & PICKLEBALL (Vợt, Giày Nike/Asics)
-    // ==========================================
     {
         productCode: "SP836",
         name: "Vợt Tennis Babolat Pure Drive 300g - Xanh Metallic Chính Hãng",
@@ -1537,9 +1523,6 @@ const multiSportCatalog = [
         isHidden: false
     },
 
-    // ==========================================
-    // 6. CHẠY BỘ, TẬP GYM & YOGA
-    // ==========================================
     {
         productCode: "SP801",
         name: "Giày Chạy Bộ (Running) & Tập Gym Đa Năng ASICS Court Hunter FF - Trắng",
@@ -1646,9 +1629,6 @@ const multiSportCatalog = [
         isHidden: false
     },
 
-    // ==========================================
-    // 7. TÚI TRỐNG & PHỤ KIỆN THỂ THAO ĐA MÔN
-    // ==========================================
     {
         productCode: "SP817",
         name: "Túi Trống Thể Thao Tập Gym & Bóng Đá Hundred Utilitarian (35L) - Xanh Navy",
