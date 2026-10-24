@@ -1,6 +1,7 @@
 
 /* Bảng màu chủ đạo dùng chung cho toàn bộ trang web */
 :root {
+    color-scheme: light only;
     --dark-slate: #22303f;       
     --neon-orange: #3e93d4;      
     --primary-hover: #2e77b0;    
@@ -18,6 +19,20 @@ body {
     color: var(--dark-slate);
     -webkit-font-smoothing: antialiased;
 }
+
+/* Chống trình duyệt tự bật Dark Mode làm đen nền ô input và mờ chữ select */
+input, select, textarea {
+    color-scheme: light;
+    background-color: #ffffff;
+    color: #22303f;
+    font-family: inherit;
+}
+
+input::placeholder, textarea::placeholder {
+    color: #6b7280;
+    opacity: 1;
+}
+
 
 .main-header {
     background-color: var(--dark-slate);

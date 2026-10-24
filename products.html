@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -218,7 +219,14 @@
     </main>
 
     <script src="js/gallery-data.js"></script>
+    <script src="gallery-data.js"></script>
     <script src="js/products.js"></script>
+    <script>
+        // Tự động nạp lại từ thư mục hiện tại nếu bạn để file products.js nằm chung thư mục với products.html
+        if (typeof mockProducts === "undefined") {
+            document.write('<script src="products.js"><\/script>');
+        }
+    </script>
 </body>
 
 </html>
