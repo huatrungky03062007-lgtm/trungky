@@ -13,6 +13,7 @@
 </head>
 
 <body>
+    <!-- Phần đầu trang: logo, thanh tìm kiếm và giỏ hàng -->
     <header class="main-header">
         <div class="header-top">
             <div class="header-container flex-between">
@@ -30,7 +31,7 @@
 
                 <div class="search-box">
                     <input type="text" id="searchInput" placeholder="Tìm tên sản phẩm, thương hiệu...">
-                    <button id="btnSearch" aria-label="Tìm kiếm">
+                    <button id="btnSearch">
                         <img src="image/magnifying-glass-solid-full.svg" alt="Tìm kiếm" class="custom-icon">
                     </button>
                 </div>
@@ -74,7 +75,8 @@
                     <li class="has-mega-menu">
                         <a href="products.html">SẢN PHẨM <i class="fa-solid fa-chevron-down menu-arrow"></i></a>
 
-<div class="mega-menu">
+<!-- Menu đa cấp xổ xuống khi rê chuột vào mục SẢN PHẨM -->
+                        <div class="mega-menu">
                             <div class="mega-column">
                                 <h4><i class="fa-solid fa-shoe-prints"></i> GIÀY THỂ THAO</h4>
                                 <ul>
@@ -174,8 +176,14 @@
     </header>
 
     <main class="container">
+        <!-- Cột lọc tìm kiếm nâng cao bên trái (kết hợp tên + loại + khoảng giá) -->
         <aside class="sidebar">
             <h3>Bộ lọc tìm kiếm</h3>
+
+            <div class="filter-group">
+                <h4>Tên sản phẩm</h4>
+                <input type="text" id="advNameInput" placeholder="Nhập tên sản phẩm..." style="width: 100%; padding: 8px 10px; box-sizing: border-box; border: 1px solid var(--gray-border); border-radius: 6px;">
+            </div>
 
             <div class="filter-group">
                 <h4>Danh mục sản phẩm</h4>
@@ -201,8 +209,10 @@
                 </select>
             </div>
 
+            <!-- Khung lưới hiển thị danh sách sản phẩm (đổ từ file products.js qua) -->
             <div class="product-grid" id="productGrid"></div>
 
+            <!-- Các nút phân trang -->
             <div class="pagination" id="pagination"></div>
         </section>
     </main>

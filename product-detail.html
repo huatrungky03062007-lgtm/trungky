@@ -30,7 +30,7 @@
 
                 <div class="search-box">
                     <input type="text" id="searchInput" placeholder="Tìm tên sản phẩm, thương hiệu...">
-                    <button id="btnSearch" aria-label="Tìm kiếm">
+                    <button id="btnSearch">
                         <img src="image/magnifying-glass-solid-full.svg" alt="Tìm kiếm" class="custom-icon">
                     </button>
                 </div>
@@ -178,12 +178,13 @@
             <span id="detailBreadcrumbName" class="breadcrumb-current"></span>
         </div>
 
+        <!-- Khung thông tin chi tiết sản phẩm gồm 3 cột: Ảnh - Thông tin mua - Danh mục -->
         <div class="product-detail-wrapper">
             <div class="detail-left">
-                <div class="main-image" aria-live="polite">
-                    <img id="detailImage" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Ảnh sản phẩm">
-                    <button class="gallery-arrow gallery-prev" type="button" aria-label="Xem ảnh trước" onclick="navigateGallery(-1)">&#10094;</button>
-                    <button class="gallery-arrow gallery-next" type="button" aria-label="Xem ảnh tiếp theo" onclick="navigateGallery(1)">&#10095;</button>
+                <div class="main-image">
+                    <img id="detailImage" src="https://via.placeholder.com/600x600?text=SPORT+MAX" alt="Ảnh sản phẩm">
+                    <button class="gallery-arrow gallery-prev" type="button" onclick="navigateGallery(-1)">&#10094;</button>
+                    <button class="gallery-arrow gallery-next" type="button" onclick="navigateGallery(1)">&#10095;</button>
                     <span id="galleryCounter" class="gallery-counter">1 / 4</span>
                 </div>
                 <div class="thumbnail-list" id="thumbnailList"></div>
@@ -243,8 +244,9 @@
             </div>
         </div>
 
+        <!-- Phần tab Mô tả sản phẩm & Thông số kỹ thuật -->
         <section class="detail-content-card">
-            <div class="detail-content-tabs" role="tablist">
+            <div class="detail-content-tabs">
                 <button class="detail-tab active" type="button" data-detail-tab="description">MÔ TẢ SẢN PHẨM</button>
                 <button class="detail-tab" type="button" data-detail-tab="specifications">THÔNG SỐ KỸ THUẬT</button>
             </div>

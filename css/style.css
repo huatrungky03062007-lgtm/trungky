@@ -1,4 +1,5 @@
 
+/* Bảng màu chủ đạo dùng chung cho toàn bộ trang web */
 :root {
     --dark-slate: #22303f;       
     --neon-orange: #3e93d4;      
@@ -195,6 +196,7 @@ body {
     color: var(--white);
 }
 
+/* Khung Mega Menu xổ xuống khi rê chuột vào mục Sản phẩm */
 .mega-menu {
     position: absolute;
     top: 100%;
@@ -213,7 +215,8 @@ body {
     box-sizing: border-box;
 }
 
-.has-mega-menu:hover .mega-menu {
+.has-mega-menu:hover /* Khung Mega Menu xổ xuống khi rê chuột vào mục Sản phẩm */
+.mega-menu {
     display: grid;
 }
 
@@ -509,6 +512,7 @@ body {
     border-color: var(--neon-orange);
 }
 
+/* Giao diện trang Chi tiết sản phẩm */
 .product-detail-page {
     display: block;
 }
@@ -895,6 +899,7 @@ body {
     text-decoration: none;
 }
 
+/* Giao diện trang Quản trị (Admin) */
 .admin-body {
     background-color: var(--gray-light);
 }
@@ -1186,6 +1191,7 @@ body {
     background-color: var(--gray-light);
 }
 
+/* Chỉnh lại bố cục cho màn hình nhỏ (máy tính bảng / điện thoại) */
 @media (max-width: 992px) {
     .flex-between {
         flex-wrap: wrap;
@@ -1212,7 +1218,8 @@ body {
         flex: 1 1 100%;
         width: 100%;
     }
-    .mega-menu {
+    /* Khung Mega Menu xổ xuống khi rê chuột vào mục Sản phẩm */
+.mega-menu {
         grid-template-columns: repeat(2, 1fr);
         max-height: 80vh;
         overflow-y: auto;

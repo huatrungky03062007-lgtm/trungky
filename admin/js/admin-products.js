@@ -1,3 +1,4 @@
+// biến lưu danh sách sp, loại sp và trạng thái đang thêm mới hay đang sửa
 let products = [];
 let categories = [];
 let isEditMode = false;
@@ -14,6 +15,7 @@ const defaultCategories = [
     { categoryCode: "CAT08", name: "Phụ Kiện Thể Thao", profitMargin: 40, isHidden: false }
 ];
 
+// lấy dữ liệu sp và loại sp từ dưới localStorage lên
 function loadData() {
     let pData = localStorage.getItem("products");
     let cData = localStorage.getItem("categories");
@@ -22,54 +24,73 @@ function loadData() {
     if (cData) {
         categories = JSON.parse(cData);
     } else {
-        categories = [...defaultCategories];
+        categories = defaultCategories.slice();
         localStorage.setItem("categories", JSON.stringify(categories));
     }
 }
 
+// đổ các loại sp vô ô select trong popup thêm/sửa sp
 function populateCategorySelect() {
     let select = document.getElementById("proCategoryInput");
     if (!select) return;
     select.innerHTML = "";
-    categories.forEach(cat => {
-        select.innerHTML += `<option value="${cat.categoryCode}">${cat.name}</option>`;
-    });
+    for (let i = 0; i < categories.length; i++) {
+        select.innerHTML += `<option value="${categories[i].categoryCode}">${categories[i].name}</option>`;
+    }
 }
 
+// tìm tên loại sp dựa theo mã loại (vd CAT01 -> Vợt & Dụng Cụ)
 function getCategoryName(code) {
-    let cat = categories.find(c => c.categoryCode === code);
-    return cat ? cat.name : "Không xác định";
+    for (let i = 0; i < categories.length; i++) {
+        if (categories[i].categoryCode === code) {
+            return categories[i].name;
+        }
+    }
+    return "Không xác định";
 }
 
-function renderProducts(filterKeyword = "") {
+// vẽ bảng danh sách sp (có hỗ trợ gõ tìm nhanh theo mã hoặc tên)
+function renderProducts(filterKeyword) {
     let tbody = document.getElementById("productTableBody");
     if (!tbody) return;
     tbody.innerHTML = "";
 
-    const kw = String(filterKeyword || "").trim().toLowerCase();
-    const list = kw
-        ? products.filter(p =>
-            String(p.productCode || "").toLowerCase().includes(kw) ||
-            String(p.name || "").toLowerCase().includes(kw) ||
-            getCategoryName(p.categoryCode).toLowerCase().includes(kw)
-        )
-        : products;
+    let kw = String(filterKeyword || "").trim().toLowerCase();
+    let list = [];
 
-    list.forEach(p => {
+    if (kw !== "") {
+        for (let i = 0; i < products.length; i++) {
+            let p = products[i];
+            let pCode = String(p.productCode || "").toLowerCase();
+            let pName = String(p.name || "").toLowerCase();
+            let cName = getCategoryName(p.categoryCode).toLowerCase();
+
+            if (pCode.indexOf(kw) !== -1 || pName.indexOf(kw) !== -1 || cName.indexOf(kw) !== -1) {
+                list.push(p);
+            }
+        }
+    } else {
+        list = products;
+    }
+
+    let rowsHtml = "";
+    for (let i = 0; i < list.length; i++) {
+        let p = list[i];
         let statusText = p.isHidden ? "Đang ẩn" : "Đang hiện";
         let statusColor = p.isHidden ? "#e0685f" : "#2e7d32";
         let displayPrice = Number(p.salePrice || p.price || p.sellingPrice || p.importPrice || 0);
-        let formattedPrice = displayPrice.toLocaleString('vi-VN');
+        let formattedPrice = displayPrice.toLocaleString("vi-VN");
         let thumbUrl = p.image || "https://via.placeholder.com/50?text=SP";
+        let stockCount = (p.stock !== undefined && p.stock !== null) ? p.stock : 50;
 
-        let tr = `
+        rowsHtml += `
             <tr>
                 <td><img src="${thumbUrl}" alt="img" style="width: 50px; height: 50px; object-fit: contain; border-radius: 4px;" onerror="this.src='https://via.placeholder.com/50?text=SP'"></td>
                 <td><strong>${p.productCode}</strong></td>
                 <td>${p.name}</td>
                 <td>${getCategoryName(p.categoryCode)}</td>
                 <td style="color: #e0685f; font-weight: 600;">${formattedPrice} đ</td>
-                <td>${p.stock ?? 50}</td>
+                <td>${stockCount}</td>
                 <td style="color: ${statusColor}; font-weight: bold;">${statusText}</td>
                 <td style="white-space: nowrap;">
                     <button class="btn-action btn-edit" onclick="openEditModal('${p.productCode}')">Sửa</button>
@@ -78,10 +99,11 @@ function renderProducts(filterKeyword = "") {
                 </td>
             </tr>
         `;
-        tbody.innerHTML += tr;
-    });
+    }
+    tbody.innerHTML = rowsHtml;
 }
 
+// bấm nút + Thêm Sản Phẩm thì làm trống form rồi mở popup lên
 if (document.getElementById("btnAddProduct")) {
     document.getElementById("btnAddProduct").addEventListener("click", function() {
         isEditMode = false;
@@ -101,12 +123,14 @@ if (document.getElementById("btnAddProduct")) {
     });
 }
 
+// bấm nút X để tắt popup
 if (document.getElementById("btnCloseModal")) {
     document.getElementById("btnCloseModal").addEventListener("click", function() {
         document.getElementById("productModal").style.display = "none";
     });
 }
 
+// xử lý khi bấm nút Lưu Sản Phẩm trong form
 if (document.getElementById("btnSaveProduct")) {
     document.getElementById("btnSaveProduct").addEventListener("click", function() {
         let code = document.getElementById("proCodeInput").value.trim();
@@ -125,32 +149,52 @@ if (document.getElementById("btnSaveProduct")) {
 
         let priceNum = parseInt(price);
         let stockNum = parseInt(stock);
-        let catObj = categories.find(c => c.categoryCode === catCode);
-        let margin = catObj ? catObj.profitMargin : 0;
+
+        // lấy % lợi nhuận của loại sp đó để tính ra giá bán tự động
+        let margin = 0;
+        for (let i = 0; i < categories.length; i++) {
+            if (categories[i].categoryCode === catCode) {
+                margin = categories[i].profitMargin;
+                break;
+            }
+        }
         let computedSellingPrice = Math.round(priceNum * (1 + margin / 100) / 1000) * 1000;
 
-        let imgArray = image ? image.split(',').map(s => s.trim()).filter(s => s) : [];
+        // nếu nhập nhiều link hình cách nhau bằng dấu phẩy thì tách ra thành mảng
+        let imgArray = [];
+        if (image !== "") {
+            let parts = image.split(",");
+            for (let i = 0; i < parts.length; i++) {
+                let s = parts[i].trim();
+                if (s !== "") imgArray.push(s);
+            }
+        }
         let firstImage = imgArray.length > 0 ? imgArray[0] : "https://via.placeholder.com/200?text=SportMax";
 
         if (isEditMode) {
-            let pIndex = products.findIndex(p => p.productCode === currentEditCode);
-            if (pIndex !== -1) {
-                products[pIndex].name = name;
-                products[pIndex].categoryCode = catCode;
-                products[pIndex].image = firstImage;
-                products[pIndex].images = imgArray.length > 0 ? imgArray : [firstImage];
-                products[pIndex].importPrice = priceNum;
-                products[pIndex].salePrice = priceNum;
-                products[pIndex].sellingPrice = computedSellingPrice;
-                products[pIndex].stock = stockNum;
-                products[pIndex].description = desc;
-                products[pIndex].isHidden = isHidden;
+            // nếu đang ở chế độ Sửa thì cập nhật lại thông tin cho sp đó
+            for (let i = 0; i < products.length; i++) {
+                if (products[i].productCode === currentEditCode) {
+                    products[i].name = name;
+                    products[i].categoryCode = catCode;
+                    products[i].image = firstImage;
+                    products[i].images = imgArray.length > 0 ? imgArray : [firstImage];
+                    products[i].importPrice = priceNum;
+                    products[i].salePrice = priceNum;
+                    products[i].sellingPrice = computedSellingPrice;
+                    products[i].stock = stockNum;
+                    products[i].description = desc;
+                    products[i].isHidden = isHidden;
+                    break;
+                }
             }
         } else {
-            let checkExist = products.find(p => p.productCode === code);
-            if (checkExist) {
-                alert("Mã sản phẩm đã tồn tại trong hệ thống!");
-                return;
+            // nếu thêm mới thì check xem mã sp có bị trùng với sp cũ ko
+            for (let i = 0; i < products.length; i++) {
+                if (products[i].productCode === code) {
+                    alert("Mã sản phẩm đã tồn tại trong hệ thống!");
+                    return;
+                }
             }
 
             let newPro = {
@@ -168,50 +212,71 @@ if (document.getElementById("btnSaveProduct")) {
                 profitMarginOverride: 0,
                 isHidden: isHidden
             };
-            products.unshift(newPro);
+            products.unshift(newPro); // nhét sp mới thêm lên đầu bảng cho dễ thấy
         }
 
         localStorage.setItem("products", JSON.stringify(products));
-        renderProducts();
+        let searchBox = document.getElementById("adminSearchInput");
+        renderProducts(searchBox ? searchBox.value : "");
         document.getElementById("productModal").style.display = "none";
     });
 }
 
+// bấm nút Sửa thì mở popup lên và điền lại đầy đủ thông tin cũ vào các ô
 window.openEditModal = function(code) {
     isEditMode = true;
     currentEditCode = code;
     document.getElementById("modalTitle").innerText = "Sửa Thông Tin Sản Phẩm";
 
-    let p = products.find(p => p.productCode === code);
+    let p = null;
+    for (let i = 0; i < products.length; i++) {
+        if (products[i].productCode === code) {
+            p = products[i];
+            break;
+        }
+    }
+
     if (p) {
         document.getElementById("proCodeInput").value = p.productCode;
         document.getElementById("proCodeInput").disabled = true;
         document.getElementById("proNameInput").value = p.name || "";
         document.getElementById("proCategoryInput").value = p.categoryCode;
-        document.getElementById("proImageInput").value = p.images && p.images.length > 0 ? p.images.join(', ') : (p.image || "");
+        document.getElementById("proImageInput").value = (p.images && p.images.length > 0) ? p.images.join(", ") : (p.image || "");
         document.getElementById("proPriceInput").value = p.salePrice || p.importPrice || 0;
-        document.getElementById("proStockInput").value = p.stock ?? 50;
+        document.getElementById("proStockInput").value = (p.stock !== undefined && p.stock !== null) ? p.stock : 50;
         document.getElementById("proDescInput").value = p.description || "";
-        document.getElementById("proStatusInput").value = Boolean(p.isHidden).toString();
+        document.getElementById("proStatusInput").value = p.isHidden ? "true" : "false";
 
         document.getElementById("productModal").style.display = "flex";
     }
 };
 
+// bấm nút Ẩn/Hiện để tạm ẩn sp ngoài trang khách mà ko cần xoá mất dữ liệu
 window.toggleProductStatus = function(code) {
-    let p = products.find(item => item.productCode === code);
-    if (p) {
-        p.isHidden = !p.isHidden;
-        localStorage.setItem("products", JSON.stringify(products));
-        renderProducts();
+    for (let i = 0; i < products.length; i++) {
+        if (products[i].productCode === code) {
+            products[i].isHidden = !products[i].isHidden;
+            break;
+        }
     }
+    localStorage.setItem("products", JSON.stringify(products));
+    let searchBox = document.getElementById("adminSearchInput");
+    renderProducts(searchBox ? searchBox.value : "");
 };
 
+// xoá hẳn sp khỏi danh sách (có hỏi confirm trước)
 window.deleteProduct = function(code) {
     if (confirm("Bạn có chắc chắn muốn xóa sản phẩm này?")) {
-        products = products.filter(p => p.productCode !== code);
+        let newList = [];
+        for (let i = 0; i < products.length; i++) {
+            if (products[i].productCode !== code) {
+                newList.push(products[i]);
+            }
+        }
+        products = newList;
         localStorage.setItem("products", JSON.stringify(products));
-        renderProducts();
+        let searchBox = document.getElementById("adminSearchInput");
+        renderProducts(searchBox ? searchBox.value : "");
     }
 };
 
